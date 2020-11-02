@@ -1,6 +1,6 @@
 const toString = Object.prototype.toString
 
-export function isPlaneObject(data: any): data is object {
+export function isPlaneObject(data: any): data is Object {
   return toString.call(data) === '[object Object]'
 }
 

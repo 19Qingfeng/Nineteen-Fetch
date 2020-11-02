@@ -19,7 +19,58 @@
     保留 url 中已存在的参数
 
 */
+import { isPlaneObject, isDate } from './utlis'
+
+function encode(val: string): string {
+  return encodeURIComponent(val)
+    .replace(/%40/g, '@')
+    .replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']')
+}
 
 export function buildUrl(url: string, params?: any): string {
-  return ''
+  if (!params) {
+    return url
+  }
+
+  const keys = Object.keys(params)
+
+  const part: string[] = []
+
+  keys.forEach(key => {
+    let val = params[key]
+    if (val === undefined || val === null) return
+    let value: any[]
+    // 统一处理 全部转为array处理
+    if (Array.isArray(val)) {
+      value = val
+      key = `${key}[]`
+    } else {
+      value = [val]
+    }
+    value.forEach(val => {
+      if (isPlaneObject(val)) {
+        val = JSON.stringify(val)
+      }
+      if (isDate(val)) {
+        val = val.toISOString()
+      }
+      part.push(`${encode(key)}=${encode(val)}`)
+    })
+  })
+
+  let serializedParams = part.join('&')
+
+  if (serializedParams) {
+    const markIndex = url.indexOf('#')
+    if (markIndex !== -1) url = url.slice(0, markIndex)
+    // 处理是否存在&
+    url += url.indexOf('?') === -1 ? `?${serializedParams}` : `&${serializedParams}`
+  }
+
+  return url
 }
