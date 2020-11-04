@@ -1,3 +1,4 @@
+import { parse } from 'path'
 import { isPlaneObject } from './utlis'
 
 /* 
@@ -27,4 +28,18 @@ export function processHeaders(headers: any, data: any): any {
   }
 
   return headers
+}
+
+export function parseHeaders(headers: string): any {
+  const parsed = Object.create(null)
+  headers.split('\r\n').forEach(header => {
+    let [key, value] = header.split(':')
+    key = key.trim().toLowerCase()
+    if (!key) return
+    if (value) {
+      value = value.trim()
+    }
+    parsed[key] = value
+  })
+  return parsed
 }
