@@ -1,6 +1,6 @@
 # ts for axios
 
-### Get 请求 Params 拼接 Ur
+### Get 请求 Params 拼接 Url
 
 > <font size=2 color=red>完成</font>
 
