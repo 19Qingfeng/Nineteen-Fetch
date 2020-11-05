@@ -88,3 +88,10 @@ content-type: application/json; charset=utf-8
 - 格式化 responseData，对于未设置 request.responseType='json'但返回数据是一个 JSON 字符串，默认调用 JSON.parse 格式化。
 
 ---
+
+> 之前的逻辑都是基于Promise获取正常的请求逻辑，对于实现的请求逻辑并没有处理错误逻辑处理。
+
+
+### 处理网络错误
+
+> 需求：处理捕获网络错误并且可以通过Promise进行调用。
