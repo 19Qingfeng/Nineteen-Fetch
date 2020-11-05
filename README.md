@@ -94,4 +94,10 @@ content-type: application/json; charset=utf-8
 
 ### 处理网络错误
 
-> 需求：处理捕获网络错误并且可以通过Promise进行调用。
+> 需求：简单错误错误。
+
++ 网络错误。
+
++ 网络超时。
+
++ 非2XX状态码。
