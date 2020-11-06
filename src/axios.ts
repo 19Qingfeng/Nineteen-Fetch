@@ -1,40 +1,29 @@
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
-import { xhr } from './xhr'
-import { buildUrl } from './helpers/url'
-import { transformRequest, transformResponse } from './helpers/data'
-import { processHeaders } from './helpers/headers'
+import Axios from './core/Axios'
+import { AxiosInstance } from './types'
+import { extend } from './helpers/extend'
+function createInstance(): AxiosInstance {
+  const axios = new Axios()
+  const request = Axios.prototype.request.bind(axios)
 
-function axios(config: AxiosRequestConfig): AxiosPromise {
-  processCofing(config)
-  return xhr(config).then(response => {
-    return transformResponseData(response)
-  })
+  extend(request, axios) // 合并
+
+  /* 
+    其实这里还有一种更加优雅的写法
+    extend的思路是在axios也就是request方法上挂载axios实例原型上的所有方法
+    可以使用proxy代替extend方法 但是缺点就是proxy在IE11中是没有polyfill的
+    
+    return new Proxy(request,{
+        get(target,key) {
+            if(key) {
+                return axios[key]
+            }
+        }
+    })
+  */
+
+  return request as AxiosInstance
 }
 
-function processCofing(config: AxiosRequestConfig): void {
-  config.url = transformUrl(config)
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
-}
-
-function transformUrl(config: AxiosRequestConfig): string {
-  const { url, params } = config
-  return buildUrl(url, params)
-}
-
-function transformRequestData(config: AxiosRequestConfig): any {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
-}
-
-function transformResponseData(response: AxiosResponse): AxiosResponse {
-  const { data } = response
-  response.data = transformResponse(data)
-  return response
-}
+const axios = createInstance()
 
 export default axios
