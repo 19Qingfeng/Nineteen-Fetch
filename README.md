@@ -104,3 +104,30 @@ content-type: application/json; charset=utf-8
 ### 错误信息增强
 
 > 需求:增强错误信息，返回错误信息非简单 string 提示，同时返回请求配置，状态码以及 request 实例等。
+
+---
+
+### 扩展属性
+
+> 基于axios本身存在axios.get/axios.delelte...
+
+- axios.request(config)
+
+- axios.get(url[, config])
+
+- axios.delete(url[, config])
+
+- axios.head(url[, config])
+
+- axios.options(url[, config])
+
+- axios.post(url[, data[, config]])
+
+- axios.put(url[, data[, config]])
+
+- axios.patch(url[, data[, config]])
+
+如果使用了这些方法，我们就不必在 config 中指定 url、method、data 这些属性了。
+
+从需求上来看，axios 不再单单是一个方法，更像是一个混合对象，本身是一个方法，又有很多方法属性，接下来我们就来实现这个混合对象。
+
