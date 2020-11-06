@@ -16,7 +16,7 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       request.timeout = timeout
     }
 
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
     // open之后设置headers
     Object.keys(headers).forEach(header => {
       if (data === null && header.toLocaleLowerCase() === 'content-type') {

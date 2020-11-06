@@ -19,7 +19,7 @@ function processCofing(config: AxiosRequestConfig): void {
 
 function transformUrl(config: AxiosRequestConfig): string {
   const { url, params } = config
-  return buildUrl(url, params)
+  return buildUrl(url!, params)
 }
 
 function transformRequestData(config: AxiosRequestConfig): any {
