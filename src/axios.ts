@@ -1,6 +1,6 @@
 import Axios from './core/Axios'
 import { AxiosInstance } from './types'
-import { extend } from './helpers/extend'
+import { extend } from './helpers/utlis'
 // 扩展接口本质其实就是将原本的aixos方法 拷贝Axios类的实例方法 最终调用的还是axios
 function createInstance(): AxiosInstance {
   const axios = new Axios()
