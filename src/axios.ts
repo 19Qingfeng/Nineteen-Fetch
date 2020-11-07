@@ -3,10 +3,10 @@ import { AxiosInstance } from './types'
 import { extend } from './helpers/utlis'
 // 扩展接口本质其实就是将原本的aixos方法 拷贝Axios类的实例方法 最终调用的还是axios
 function createInstance(): AxiosInstance {
-  const axios = new Axios()
-  const request = Axios.prototype.request.bind(axios)
+  const context = new Axios()
+  const instance = Axios.prototype.request.bind(context)
 
-  extend(request, axios) // 合并
+  extend(instance, context) // 合并
 
   /* 
     其实这里还有一种更加优雅的写法
@@ -22,7 +22,7 @@ function createInstance(): AxiosInstance {
     })
   */
 
-  return request as AxiosInstance
+  return instance as AxiosInstance
 }
 
 const axios = createInstance()

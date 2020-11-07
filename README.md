@@ -131,3 +131,5 @@ content-type: application/json; charset=utf-8
 
 从需求上来看，axios 不再单单是一个方法，更像是一个混合对象，本身是一个方法，又有很多方法属性，接下来我们就来实现这个混合对象。
 
+---
+
