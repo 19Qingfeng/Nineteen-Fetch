@@ -1,8 +1,17 @@
 import dispatchRequest from './dispatchRequest'
+import { isPlaneObject } from '../helpers/utlis'
 import { Method, AxiosRequestConfig, AxiosPromise } from '../types'
 
 class Axios {
-  request(config: AxiosRequestConfig) {
+  request(url: any, config?: any) {
+    if (typeof url === 'string') {
+      if (!isPlaneObject(config)) {
+        config = {}
+      }
+      config.url = url
+    } else {
+      config = url
+    }
     return dispatchRequest(config)
   }
 
