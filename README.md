@@ -109,7 +109,7 @@ content-type: application/json; charset=utf-8
 
 ### 扩展属性
 
-> 基于axios本身存在axios.get/axios.delelte...
+> 需求：基于 axios 本身存在 axios.get/axios.delelte...
 
 - axios.request(config)
 
@@ -133,3 +133,28 @@ content-type: application/json; charset=utf-8
 
 ---
 
+### 函数重载
+
+> 需求：Axios 函数实现函数重载。
+> 目前 axios 直接调用 函数只支持传入 1 个参数，如下：
+
+```
+axios({
+  url: '/extend/post',
+  method: 'post',
+  data: {
+    msg: 'hi'
+  }
+})
+```
+
+希望该函数也能支持传入 2 个参数，如下：
+
+```
+axios('/extend/post', {
+  method: 'post',
+  data: {
+    msg: 'hello'
+  }
+})
+```
