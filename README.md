@@ -158,3 +158,9 @@ axios('/extend/post', {
   }
 })
 ```
+
+### 响应数据支持范型
+
+> 需求：希望通过调用axios时可以支持传入范型从而让TS可以正确的推断出response的类型。
+> 简单来说也就是axios方法支持传入范型T，此时responseData中的data类型就为T。
+
