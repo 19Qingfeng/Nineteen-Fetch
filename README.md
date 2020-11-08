@@ -107,7 +107,7 @@ content-type: application/json; charset=utf-8
 
 ---
 
-### 扩展属性
+### 扩展接口
 
 > 需求：基于 axios 本身存在 axios.get/axios.delelte...
 
@@ -130,8 +130,6 @@ content-type: application/json; charset=utf-8
 如果使用了这些方法，我们就不必在 config 中指定 url、method、data 这些属性了。
 
 从需求上来看，axios 不再单单是一个方法，更像是一个混合对象，本身是一个方法，又有很多方法属性，接下来我们就来实现这个混合对象。
-
----
 
 ### 函数重载
 
