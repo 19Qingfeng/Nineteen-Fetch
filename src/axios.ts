@@ -13,6 +13,17 @@ function createInstance(): AxiosInstance {
     最终达到的效果：
     直接调用axios 支持重载 ： AxiosInstance接口支持方法重载两种类型
     通过axios.request原型方法 ： 不支持重载。仅仅支持传入config。
+
+    以上注释是错误的
+    真实：实现兼容接口定义 不一定完全匹配(任一一种情况完全满足接口定义) 那么类型推断就会成功
+    也就是说instance方法 interface虽然类型定义中(request)方法仅支持一个参数(AxiosRequestCofing类型)
+    但是实际调用中 调用axios.request方法可以传入两个参数，都是any类型并且第二个参数是可选参数(可以不传递)
+    就是说axios.request方法支持传入一个参数并且类型为any，这是完全兼容类型定义的。
+    所以不会报错
+    简单来说 
+    axios类中request(url: any, config?: any)方法(存在仅传递一个any类型的参数情况)完全兼容匹配
+    request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>类型定义
+    (any是所有类型的子类型同时都是一个参数)
   */
 
   extend(instance, context) // 合并
