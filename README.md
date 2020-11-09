@@ -165,3 +165,32 @@ axios('/extend/post', {
 > 接口扩展完结。
 
 ---
+
+### 拦截器实现
+
+> 需求：
+
+```
+// 添加一个请求拦截器
+axios.interceptors.request.use(function (config) {
+  // 在发送请求之前可以做一些事情
+  return config;
+}, function (error) {
+  // 处理请求错误
+  return Promise.reject(error);
+});
+// 添加一个响应拦截器
+axios.interceptors.response.use(function (response) {
+  // 处理响应数据
+  return response;
+}, function (error) {
+  // 处理响应错误
+  return Promise.reject(error);
+});
+```
+
+#### 流程图:
+
+![拦截器过程](http://localhost:8081/ts-axios/interceptor.png)
+
+> 并且注意是可以添加多个拦截器的，拦截器的执行顺序是链式依次执行的方式。对于 request 拦截器，后添加的拦截器会在请求前的过程中先执行；对于 response 拦截器，先添加的拦截器会在响应后先执行。
