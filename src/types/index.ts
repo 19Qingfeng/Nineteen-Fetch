@@ -33,7 +33,7 @@ export interface AxiosResponse<T = any> {
   request: XMLHttpRequest
 }
 
-export interface AxiosPromise<T> extends Promise<AxiosResponse<T>> {}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {}
 
 export interface AxiosError extends Error {
   config: AxiosRequestConfig
