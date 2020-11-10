@@ -1,8 +1,36 @@
 import dispatchRequest from './dispatchRequest'
 import { isPlaneObject } from '../helpers/utlis'
-import { Method, AxiosRequestConfig, AxiosPromise } from '../types'
+import {
+  Method,
+  AxiosRequestConfig,
+  AxiosPromise,
+  AxiosResponse,
+  ResolvedFn,
+  RejecedFn
+} from '../types'
+import InterceptorManager from './InterceptorManager'
+
+interface Interceptor {
+  request: InterceptorManager<AxiosRequestConfig>
+  response: InterceptorManager<AxiosResponse>
+}
+
+interface ProimiseChain {
+  resolved: ResolvedFn | ((config: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejecedFn
+}
 
 class Axios {
+  interceptors: Interceptor
+
+  constructor() {
+    // 初始化request和response拦截器对象
+    this.interceptors = {
+      request: new InterceptorManager<AxiosRequestConfig>(),
+      response: new InterceptorManager<AxiosResponse>()
+    }
+  }
+
   request(url: any, config?: any) {
     if (typeof url === 'string') {
       if (!isPlaneObject(config)) {
@@ -12,8 +40,46 @@ class Axios {
     } else {
       config = url
     }
-    return dispatchRequest(config)
+    // 创建Promise链 默认发送请求逻辑
+    const proimiseChain: Array<ProimiseChain> = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
+
+    // 获取所有拦截器对象
+    this.interceptors.request.forEach(interceptor => {
+      const { resolvedFn, rejectedFn } = interceptor
+      proimiseChain.unshift({
+        resolved: resolvedFn,
+        rejected: rejectedFn
+      })
+    })
+
+    this.interceptors.response.forEach(interceptor => {
+      const { resolvedFn, rejectedFn } = interceptor
+      proimiseChain.push({
+        resolved: resolvedFn,
+        rejected: rejectedFn
+      })
+    })
+
+    // Promise链式调用
+    let promise = Promise.resolve(config)
+    while (proimiseChain.length) {
+      // 数组shift返回的是T | undefined 所以！断言
+      const { resolved, rejected } = proimiseChain.shift()!
+
+      promise = promise.then(resolved, rejected)
+    }
+
+    // return dispatchRequest(config)
+    return promise
   }
+
+  // axios上存在interceptors属性
+  // interceptors 存在response和request 两个属性 这两个属性分别是一个拦截器对象
 
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {
     return this._requestMethodWithoutData(url, 'get', config)

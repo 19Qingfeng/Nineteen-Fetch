@@ -201,4 +201,4 @@ axios.interceptors.response.use(function (response) {
 
 + Axios类创建过程，构造函数初始化拦截器对象属性(interceptor属性)拥有response属性(拦截器实例)和response属性(拦截器实例)。
 
-+ 调用发送请求逻辑时，request方法中处理Promise链逻辑。
++ 调用发送请求逻辑时，request实例方法中处理Promise链逻辑。
