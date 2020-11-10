@@ -194,3 +194,11 @@ axios.interceptors.response.use(function (response) {
 ![拦截器过程](http://localhost:8081/ts-axios/interceptor.png)
 
 > 并且注意是可以添加多个拦截器的，拦截器的执行顺序是链式依次执行的方式。对于 request 拦截器，后添加的拦截器会在请求前的过程中先执行；对于 response 拦截器，先添加的拦截器会在响应后先执行。
+
+###### 拦截器实现思路过程
+
++ 创建拦截器interceptorManager类,对外暴露拥有实例方法use添加和eject删除，对内forEach方法调用。
+
++ Axios类创建过程，构造函数初始化拦截器对象属性(interceptor属性)拥有response属性(拦截器实例)和response属性(拦截器实例)。
+
++ 调用发送请求逻辑时，request方法中处理Promise链逻辑。
