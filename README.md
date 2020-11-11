@@ -202,3 +202,6 @@ axios.interceptors.response.use(function (response) {
 + Axios类创建过程，构造函数初始化拦截器对象属性(interceptor属性)拥有response属性(拦截器实例)和response属性(拦截器实例)。
 
 + 调用发送请求逻辑时，request实例方法中处理Promise链逻辑。
+
+###### 总结过程
+> Axios类实例属性interceptors,存在request和response属性。这两个属性分别对应AxiosInterceptorManager实例对象(拦截器对象，use，eject对外暴露方法，内部forEach调用)。在request发情请求前，采用Promies链获取request和response的拦截器push，unshift到对应基本链中。基本链(拥有resolved:dispatchRequest,rejected:undefind)。
