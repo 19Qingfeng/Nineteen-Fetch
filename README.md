@@ -203,5 +203,27 @@ axios.interceptors.response.use(function (response) {
 
 + 调用发送请求逻辑时，request实例方法中处理Promise链逻辑。
 
-###### 总结过程
+###### 总结拦截器 
 > Axios类实例属性interceptors,存在request和response属性。这两个属性分别对应AxiosInterceptorManager实例对象(拦截器对象，use，eject对外暴露方法，内部forEach调用)。在request发情请求前，采用Promies链获取request和response的拦截器push，unshift到对应基本链中。基本链(拥有resolved:dispatchRequest,rejected:undefind)。
+
+---
+
+### 合并配置的设计和实现
+
+> 需求:类似Axios库中可以通过axios.default定义一些默认的全局，局部配置。决定不同请求的不同行为：
+```
+// default属性表示默认行为
+// default.common对于全局的axios请求添加默认行为
+axios.defaults.headers.common['test'] = 123
+// 对于请求类型为post的headers添加的默认行为
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+// 默认超时配置
+axios.defaults.timeout = 2000
+// 默认BaseUrl
+axios.defaults.baseURL = 'https://api.example.com';
+```
+
+> 其中注意对于headers拥有动词post，get...也就是根据不同的请求方式决定不同的行为（添加不同的默认headers）。
+>> in short,通过axios.default添加添加请求默认值。
+
+

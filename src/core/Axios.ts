@@ -22,7 +22,7 @@ interface ProimiseChain {
 
 class Axios {
   interceptors: Interceptor
-
+  
   constructor() {
     // 初始化request和response拦截器对象
     this.interceptors = {
