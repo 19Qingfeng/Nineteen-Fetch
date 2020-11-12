@@ -22,8 +22,10 @@ interface ProimiseChain {
 
 class Axios {
   interceptors: Interceptor
-  
-  constructor() {
+  defaults: AxiosRequestConfig
+  constructor(defaultsConfig:AxiosRequestConfig) {
+    // 初始化defaults配置
+    this.defaults = defaultsConfig
     // 初始化request和response拦截器对象
     this.interceptors = {
       request: new InterceptorManager<AxiosRequestConfig>(),

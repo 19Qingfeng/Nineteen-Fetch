@@ -1,9 +1,10 @@
 import Axios from './core/Axios'
-import { AxiosInstance } from './types'
+import { AxiosInstance,AxiosRequestConfig } from './types'
 import { extend } from './helpers/utlis'
+import defaultsConifg from "./default"
 // 扩展接口本质其实就是将原本的aixos方法 拷贝Axios类的实例方法 最终调用的还是axios
-function createInstance(): AxiosInstance {
-  const context = new Axios()
+function createInstance(defaultsConifg:AxiosRequestConfig): AxiosInstance {
+  const context = new Axios(defaultsConifg)
   const instance = Axios.prototype.request.bind(context)
 
   /* 
@@ -45,6 +46,6 @@ function createInstance(): AxiosInstance {
   return instance as AxiosInstance
 }
 
-const axios = createInstance()
+const axios = createInstance(defaultsConifg)
 
 export default axios
