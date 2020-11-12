@@ -226,4 +226,61 @@ axios.defaults.baseURL = 'https://api.example.com';
 > 其中注意对于headers拥有动词post，get...也就是根据不同的请求方式决定不同的行为（添加不同的默认headers）。
 >> in short,通过axios.default添加添加请求默认值。
 
+#### default配置实现
+
+> default.ts中已经实现了默认了axios.defaults属性配置和初始化属性逻辑。
+
+#### 合并配置
+
+> 需求:接下来就要开始实现axios.defaults和用户axios传入config进行合并策略。
+
+###### 不同的配置要求存在不同的合并策略
+
+> config1是用户自定义的默认配置，而config2是用户调用时传入的配置。merged是合并后的结果。
+```
+config1 = {
+  method: 'get',
+
+  timeout: 0,
+
+  headers: {
+    common: {
+      Accept: 'application/json, text/plain, */*'
+    }
+  }
+}
+
+config2 = {
+  url: '/config/post',
+  method: 'post',
+  data: {
+    a: 1
+  },
+  headers: {
+    test: '321'
+  }
+}
+
+merged = {
+  url: '/config/post',
+  method: 'post',
+  data: {
+    a: 1
+  },
+  timeout: 0,
+  headers: {
+    common: {
+      Accept: 'application/json, text/plain, */*'
+    }
+    test: '321'
+  }
+}
+```
+
++ 对于method，timeout之类属性使用默认的合并策略。如果config2(自定义配置)存在覆盖config1(默认配置)，如果config2不存在那么就取默认config1.
+
++ 对于url，data，params字段，因为是这些参数和每一次请求息息相关的。所以应该是自定义传递的，即使在defaults中进行了配置也没有任何意义。所以这些字段仅会取config2中的值进行合并。
+
++ 对于headers之类复杂对象，对于headers合并策略并不是单纯的覆盖而是将confg1和config2进行合并取合并后的值。
+
 
