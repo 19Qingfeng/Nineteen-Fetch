@@ -1,3 +1,5 @@
+import { type } from 'os'
+
 const toString = Object.prototype.toString
 
 export function isPlaneObject(data: any): data is Object {
@@ -15,4 +17,30 @@ export function extend<T, U>(to: U, from: T): T & U {
   }
   // 断言to是T&U 否则会认定to为T
   return to as T & U
+}
+
+// 合并+拷贝逻辑 传入参数依次
+// 1. 深拷贝
+// 2. 后传入的存在key(普通数据类型进行覆盖，对象进行合并)
+export function deepMerge(...objs: any[]): any {
+  const result = Object.create(null)
+  objs.forEach(obj => {
+    if (obj) {
+      // Object.keys ES2015之后对于非引用类型也可以使用并不会报错
+      Object.keys(obj).forEach(key => {
+        const val = obj[key]
+        if (isPlaneObject(val)) {
+          if (isPlaneObject(result[key])) {
+            result[key] = deepMerge(result[key], val)
+          } else {
+            result[key] = deepMerge({}, val)
+          }
+        } else {
+          result[key] = val
+        }
+      })
+    }
+  })
+
+  return result
 }

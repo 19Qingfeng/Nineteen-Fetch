@@ -1,3 +1,4 @@
+import { isPlaneObject,deepMerge } from '../helpers/utlis'
 import { AxiosRequestConfig } from '../types'
 
 // 默认合并策略
@@ -20,6 +21,24 @@ const stratKeyFromVal2 = ['url', 'data', 'params']
 
 stratKeyFromVal2.forEach(key => {
   strats[key] = fromVal2Strat
+})
+
+function deepMergeStrat (val1:any,val2:any):any {
+  if(isPlaneObject(val2)) {
+    return deepMerge(val1,val2)
+  }else if (typeof val2 !== 'undefined') {
+    return val2
+  }else if(isPlaneObject(val1)) {
+    return deepMerge(val1)
+  }else if (typeof val1 !== 'undefined') {
+    return val2
+  }
+} 
+
+const stratKeysDeepMerge = ['headers']
+
+stratKeysDeepMerge.forEach(key => {
+  strats[key] = deepMergeStrat
 })
 
 // 合并两个config

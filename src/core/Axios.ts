@@ -9,6 +9,7 @@ import {
   RejecedFn
 } from '../types'
 import InterceptorManager from './InterceptorManager'
+import mergeConfig from './mergeConfig'
 
 interface Interceptor {
   request: InterceptorManager<AxiosRequestConfig>
@@ -23,7 +24,7 @@ interface ProimiseChain {
 class Axios {
   interceptors: Interceptor
   defaults: AxiosRequestConfig
-  constructor(defaultsConfig:AxiosRequestConfig) {
+  constructor(defaultsConfig: AxiosRequestConfig) {
     // 初始化defaults配置
     this.defaults = defaultsConfig
     // 初始化request和response拦截器对象
@@ -42,6 +43,8 @@ class Axios {
     } else {
       config = url
     }
+    // 合并默认配置参数
+    config = mergeConfig(this.defaults, config)
     // 创建Promise链 默认发送请求逻辑
     const proimiseChain: Array<ProimiseChain> = [
       {
