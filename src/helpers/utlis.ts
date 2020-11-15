@@ -19,6 +19,9 @@ export function extend<T, U>(to: U, from: T): T & U {
   return to as T & U
 }
 
+// utils 抽离 抽象公用合并+深拷贝逻辑
+// 深拷贝可以用
+// 同样对象合并也可以用(合并default配置和传入的config，合并common，对应method和用户传入的headers对象合并)
 // 合并+拷贝逻辑 传入参数依次
 // 1. 深拷贝
 // 2. 后传入的存在key(普通数据类型进行覆盖，对象进行合并)

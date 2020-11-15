@@ -15,7 +15,7 @@ function processCofing(config: AxiosRequestConfig): void {
   config.url = transformUrl(config)
   config.headers = transformHeaders(config) // 处理用户传入config headers
   config.data = transformRequestData(config)
-  config.headers =  flattenHeaders(config.headers,config.method!)// 合并默认config headers
+  config.headers = flattenHeaders(config.headers, config.method!) // 合并默认config headers
 }
 
 function transformUrl(config: AxiosRequestConfig): string {
