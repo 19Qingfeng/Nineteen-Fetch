@@ -1,5 +1,5 @@
-import { parse } from 'path'
-import { isPlaneObject } from './utlis'
+import { Method } from '../types'
+import { isPlaneObject, deepMerge } from './utlis'
 
 /* 
     1. 如果data是一个JSON对象并且header不存在content-type 添加content-type application/json;charset=utf-8
@@ -42,4 +42,17 @@ export function parseHeaders(headers: string): any {
     parsed[key] = value
   })
   return parsed
+}
+
+export function flattenHeaders(headers: any, method: Method): any {
+  if (!headers) {
+    return headers
+  }
+  // 将common和对应方法以及config中的headers做一层合并 然后删除
+  headers = deepMerge(headers.common, headers[method], headers)
+  const methodToDelete = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'common']
+  methodToDelete.forEach(method => {
+    delete headers[method]
+  })
+  return headers
 }

@@ -2,7 +2,7 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { xhr } from './xhr'
 import { buildUrl } from '../helpers/url'
 import { transformRequest, transformResponse } from '../helpers/data'
-import { processHeaders } from '../helpers/headers'
+import { flattenHeaders, processHeaders } from '../helpers/headers'
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processCofing(config)
@@ -13,8 +13,9 @@ function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
 
 function processCofing(config: AxiosRequestConfig): void {
   config.url = transformUrl(config)
-  config.headers = transformHeaders(config)
+  config.headers = transformHeaders(config) // 处理用户传入config headers
   config.data = transformRequestData(config)
+  config.headers =  flattenHeaders(config.headers,config.method!)// 合并默认config headers
 }
 
 function transformUrl(config: AxiosRequestConfig): string {
