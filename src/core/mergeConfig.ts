@@ -31,7 +31,7 @@ function deepMergeStrat (val1:any,val2:any):any {
   }else if(isPlaneObject(val1)) {
     return deepMerge(val1)
   }else if (typeof val1 !== 'undefined') {
-    return val2
+    return val1
   }
 } 
 
