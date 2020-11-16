@@ -307,3 +307,8 @@ merged = {
 }
 ```
 
+> 至此合并策略逻辑完成。
+> (axios.defaults合并axios(config))。
+
+---
+
