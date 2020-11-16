@@ -9,6 +9,10 @@ import { isPlaneObject, deepMerge } from './utlis'
 */
 
 function normazilerHeader(headers: any, normazilerName: string): any {
+  /* 边界处理 */
+  if (!headers) {
+    return
+  }
   Object.keys(headers).forEach(header => {
     if (header !== normazilerName && header.toUpperCase() === normazilerName.toUpperCase()) {
       headers[normazilerName] = headers[name]
@@ -45,6 +49,7 @@ export function parseHeaders(headers: string): any {
 }
 
 export function flattenHeaders(headers: any, method: Method): any {
+  // headers可以为null 谨记解构赋值 针对于null不走默认值 undefined才会走默认值
   if (!headers) {
     return headers
   }
