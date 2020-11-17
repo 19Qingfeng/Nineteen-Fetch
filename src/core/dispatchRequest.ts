@@ -1,8 +1,8 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { xhr } from './xhr'
 import { buildUrl } from '../helpers/url'
-import { transformRequest, transformResponse } from '../helpers/data'
-import { flattenHeaders, processHeaders } from '../helpers/headers'
+import { flattenHeaders } from '../helpers/headers'
+import transform from './transform'
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processCofing(config)
@@ -13,8 +13,8 @@ function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
 
 function processCofing(config: AxiosRequestConfig): void {
   config.url = transformUrl(config)
-  config.headers = transformHeaders(config) // 处理用户传入config headers
-  config.data = transformRequestData(config)
+  // 抽离公共transform函数处理 request和response都会用到 避免dispatchrequest冗余
+  config.data = transform(config.data, config.headers, config.transformRequest)
   config.headers = flattenHeaders(config.headers, config.method!) // 合并默认config headers
 }
 
@@ -23,18 +23,9 @@ function transformUrl(config: AxiosRequestConfig): string {
   return buildUrl(url!, params)
 }
 
-function transformRequestData(config: AxiosRequestConfig): any {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
-}
-
 function transformResponseData(response: AxiosResponse): AxiosResponse {
-  const { data } = response
-  response.data = transformResponse(data)
+  // 抽离公共transform函数处理 request和response都会用到 避免dispatchrequest冗余
+  response.data = transform(response.data, response.headers, response.config.transformResponse)
   return response
 }
 

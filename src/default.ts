@@ -1,3 +1,5 @@
+import { transformResponse, transformRequest } from './helpers/data'
+import { processHeaders } from './helpers/headers'
 import { AxiosRequestConfig } from './types'
 // 关于content-type和accpet
 // content-type表示本次请求发送到服务端的格式 accept表示希望本次请求得到的返回数据格式
@@ -12,7 +14,20 @@ const defaults: AxiosRequestConfig = {
     common: {
       Accept: 'application/json,text/plain,*/*'
     }
-  }
+  },
+  transformRequest: [
+    // 抽离dispatchRequest中的header和data处理
+    function(data: any, headers: any): any {
+      processHeaders(headers, data) // header对象 引用类型处理
+      data = transformRequest(data)
+      return data
+    }
+  ],
+  transformResponse: [
+    function(data: any): any {
+      return transformResponse(data)
+    }
+  ]
 }
 
 const methodsWithOutData = ['delete', 'get', 'options', 'head']
