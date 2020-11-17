@@ -197,20 +197,22 @@ axios.interceptors.response.use(function (response) {
 
 ###### 拦截器实现思路过程
 
-+ 创建拦截器interceptorManager类,对外暴露拥有实例方法use添加和eject删除，对内forEach方法调用。
+- 创建拦截器 interceptorManager 类,对外暴露拥有实例方法 use 添加和 eject 删除，对内 forEach 方法调用。
 
-+ Axios类创建过程，构造函数初始化拦截器对象属性(interceptor属性)拥有response属性(拦截器实例)和response属性(拦截器实例)。
+- Axios 类创建过程，构造函数初始化拦截器对象属性(interceptor 属性)拥有 response 属性(拦截器实例)和 response 属性(拦截器实例)。
 
-+ 调用发送请求逻辑时，request实例方法中处理Promise链逻辑。
+- 调用发送请求逻辑时，request 实例方法中处理 Promise 链逻辑。
 
-###### 总结拦截器 
-> Axios类实例属性interceptors,存在request和response属性。这两个属性分别对应AxiosInterceptorManager实例对象(拦截器对象，use，eject对外暴露方法，内部forEach调用)。在request发情请求前，采用Promies链获取request和response的拦截器push，unshift到对应基本链中。基本链(拥有resolved:dispatchRequest,rejected:undefind)。
+###### 总结拦截器
+
+> Axios 类实例属性 interceptors,存在 request 和 response 属性。这两个属性分别对应 AxiosInterceptorManager 实例对象(拦截器对象，use，eject 对外暴露方法，内部 forEach 调用)。在 request 发情请求前，采用 Promies 链获取 request 和 response 的拦截器 push，unshift 到对应基本链中。基本链(拥有 resolved:dispatchRequest,rejected:undefind)。
 
 ---
 
 ### 合并配置的设计和实现
 
-> 需求:类似Axios库中可以通过axios.default定义一些默认的全局，局部配置。决定不同请求的不同行为：
+> 需求:类似 Axios 库中可以通过 axios.default 定义一些默认的全局，局部配置。决定不同请求的不同行为：
+
 ```
 // default属性表示默认行为
 // default.common对于全局的axios请求添加默认行为
@@ -223,20 +225,22 @@ axios.defaults.timeout = 2000
 axios.defaults.baseURL = 'https://api.example.com';
 ```
 
-> 其中注意对于headers拥有动词post，get...也就是根据不同的请求方式决定不同的行为（添加不同的默认headers）。
->> in short,通过axios.default添加添加请求默认值。
+> 其中注意对于 headers 拥有动词 post，get...也就是根据不同的请求方式决定不同的行为（添加不同的默认 headers）。
+>
+> > in short,通过 axios.default 添加添加请求默认值。
 
-#### default配置实现
+#### default 配置实现
 
-> default.ts中已经实现了默认了axios.defaults属性配置和初始化属性逻辑。
+> default.ts 中已经实现了默认了 axios.defaults 属性配置和初始化属性逻辑。
 
 #### 合并配置
 
-> 需求:接下来就要开始实现axios.defaults和用户axios传入config进行合并策略。
+> 需求:接下来就要开始实现 axios.defaults 和用户 axios 传入 config 进行合并策略。
 
 ###### 不同的配置要求存在不同的合并策略
 
-> config1是用户自定义的默认配置，而config2是用户调用时传入的配置。merged是合并后的结果。
+> config1 是用户自定义的默认配置，而 config2 是用户调用时传入的配置。merged 是合并后的结果。
+
 ```
 config1 = {
   method: 'get',
@@ -277,16 +281,17 @@ merged = {
 }
 ```
 
-+ 对于method，timeout之类属性使用默认的合并策略。如果config2(自定义配置)存在覆盖config1(默认配置)，如果config2不存在那么就取默认config1.
+- 对于 method，timeout 之类属性使用默认的合并策略。如果 config2(自定义配置)存在覆盖 config1(默认配置)，如果 config2 不存在那么就取默认 config1.
 
-+ 对于url，data，params字段，因为是这些参数和每一次请求息息相关的。所以应该是自定义传递的，即使在defaults中进行了配置也没有任何意义。所以这些字段仅会取config2中的值进行合并。
+- 对于 url，data，params 字段，因为是这些参数和每一次请求息息相关的。所以应该是自定义传递的，即使在 defaults 中进行了配置也没有任何意义。所以这些字段仅会取 config2 中的值进行合并。
 
-+ 对于headers之类复杂对象，对于headers合并策略并不是单纯的覆盖而是将confg1和config2进行合并取合并后的值。
-> 复杂类型合并思路：递归(深拷贝+对象合并(对象合并实质就是递归object到基础类型的覆盖))。
+- 对于 headers 之类复杂对象，对于 headers 合并策略并不是单纯的覆盖而是将 confg1 和 config2 进行合并取合并后的值。
+  > 复杂类型合并思路：递归(深拷贝+对象合并(对象合并实质就是递归 object 到基础类型的覆盖))。
 
 ### flatten headers
 
-> 需求：上边合并之后的headers是一个这样的对象：
+> 需求：上边合并之后的 headers 是一个这样的对象：
+
 ```
 {
   headers:{
@@ -300,7 +305,9 @@ merged = {
   }
 }
 ```
-需要得是将所有header根据不同的方式合并到不同的config中去:(拍平)
+
+需要得是将所有 header 根据不同的方式合并到不同的 config 中去:(拍平)
+
 ```
 {
   ...
@@ -308,7 +315,37 @@ merged = {
 ```
 
 > 至此合并策略逻辑完成。
-> (axios.defaults合并axios(config))。
+> (axios.defaults 合并 axios(config))。
 
 ---
 
+### 请求和响应配置
+
+> 需求：官方的 axios 库 给默认配置添加了 transformRequest 和 transformResponse 两个字段，它们的值是一个数组或者是一个函数。
+
+> 其中 transformRequest 允许你在将请求数据发送到服务器之前对其进行修改，这只适用于请求方法 put、post 和 patch，如果值是数组，则数组中的最后一个函数必须返回一个字符串或 FormData、URLSearchParams、Blob 等类型作为 xhr.send 方法的参数，而且在 transform 过程中可以修改 headers 对象。
+
+> 而 transformResponse 允许你在把响应数据传递给 then 或者 catch 之前对它们进行修改。
+
+> 当值为数组的时候，数组的每一个函数都是一个转换函数，数组中的函数就像管道一样依次执行，前者的输出作为后者的输入。
+
+比如说：
+
+```
+axios({
+  transformRequest: [(function(data) {
+    return qs.stringify(data)
+  }), ...axios.defaults.transformRequest],
+  transformResponse: [axios.defaults.transformResponse, function(data) {
+    if (typeof data === 'object') {
+      data.b = 2
+    }
+    return data
+  }],
+  url: '/config/post',
+  method: 'post',
+  data: {
+    a: 1
+  }
+})
+```
