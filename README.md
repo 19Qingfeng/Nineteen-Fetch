@@ -349,3 +349,34 @@ axios({
   }
 })
 ```
+
+### 扩展 Axios.create 静态接口
+
+> 以上的所有逻辑都是基于 export axios 实例对象，全局拥有一个 axios 实例进行请求处理和响应处理。
+
+需求:axios 都是一个单例，一旦修改了 axios 的默认配置，会影响所有的请求。希望提供了一个 axios.create 的静态接口允许我们创建一个新的 axios 实例，同时允许我们传入新的配置和默认配置合并，并做为新的默认配置。(axios.create 会继承默认 axios 所有默认配置)
+
+比如：
+
+```
+const instance = axios.create({
+  transformRequest: [(function(data) {
+    return qs.stringify(data)
+  }), ...(axios.defaults.transformRequest as AxiosTransformer[])],
+  transformResponse: [...(axios.defaults.transformResponse as AxiosTransformer[]), function(data) {
+    if (typeof data === 'object') {
+      data.b = 2
+    }
+    return data
+  }]
+})
+
+instance({
+  url: '/config/post',
+  method: 'post',
+  data: {
+    a: 1
+  }
+})
+
+```
