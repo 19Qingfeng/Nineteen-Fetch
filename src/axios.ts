@@ -1,13 +1,15 @@
 import Axios from './core/Axios'
-import { AxiosInstance,AxiosRequestConfig } from './types'
+import { AxiosRequestConfig, AxiosStatic } from './types'
 import { extend } from './helpers/utlis'
-import defaultsConifg from "./default"
+import defaultsConifg from './default'
+import mergeConfig from './core/mergeConfig'
 // 扩展接口本质其实就是将原本的aixos方法 拷贝Axios类的实例方法 最终调用的还是axios
-function createInstance(defaultsConifg:AxiosRequestConfig): AxiosInstance {
+function createInstance(defaultsConifg: AxiosRequestConfig): AxiosStatic {
   const context = new Axios(defaultsConifg)
   const instance = Axios.prototype.request.bind(context)
 
   /* 
+    -> 静态扩展create之前 createInstance方法返回axiosInstance类型 
     这里对于instance方法做了重载 基于Axios类的实例方法request支持接受两个参数(url,config)或者单个(config)参数。
     这里的AxiosInstance接口要求原型上的request方法仅支持一个参数
     所以本身类型推断是会报错的 这里在return instance的时候用了类型断言所以并不会类型推断报错
@@ -43,9 +45,12 @@ function createInstance(defaultsConifg:AxiosRequestConfig): AxiosInstance {
     })
   */
 
-  return instance as AxiosInstance
+  return instance as AxiosStatic
 }
 
 const axios = createInstance(defaultsConifg)
+axios.create = function(config) {
+  return createInstance(mergeConfig(defaultsConifg, config))
+}
 
 export default axios
