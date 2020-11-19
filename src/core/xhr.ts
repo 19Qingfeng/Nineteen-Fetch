@@ -4,7 +4,15 @@ import { parseHeaders } from '../helpers/headers'
 
 export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, url, method = 'get', headers, responseType, timeout } = requestConfig
+    const {
+      data = null,
+      url,
+      method = 'get',
+      headers,
+      responseType,
+      timeout,
+      cancelToken
+    } = requestConfig
 
     const request = new XMLHttpRequest()
 
@@ -50,6 +58,17 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
         request
       }
       handleResponse(response)
+    }
+
+    if (cancelToken) {
+      cancelToken.promise
+        .then(reason => {
+          request.abort()
+          reject(reason)
+        })
+        .catch(() => {
+          // nothing
+        })
     }
 
     request.send(data)

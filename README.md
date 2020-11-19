@@ -452,3 +452,60 @@ if (cancelToken) {
     })
 }
 ```
+
+> 实际上通过需求分析得来 axios.CancelToken 是一个类，并且在初始化的时候接受一个 Fn，初始化立即执行 Fn 传入内部取消方法供外部调用取消就 ok。
+
+> 并且异步分离原则，CancelToken 类上拥有一个内部控制的 Promise，当显式调用外部取消方法需要做到改变内部 Promise 状态从而执行 xhr 逻辑中的 then 方法从而处理 then 中取消的逻辑(通过闭包进行一系列访问):
+
+1. xhr 逻辑中封装`axios.cancelToken.promise.then(/* 一系列处理取消发送逻辑 */)`，当 Promise 为 resolve 时执行。
+
+2. 其次向外部传递 Promise 的 resolve 方法， 赋值给 cancel 方法体，外部调用取消方法体->就等于调用内部 Promise 的 resolve 方法，从而改变内部 Promise 状态执行 then 方法进行 xhr.abort。
+
+##### 关于闭包，访问不属于自身作用域内的自由变量。有两点需要注意
+
+1. 闭包中所谓的自由变量，不一定是变量，访问非自身作用域内的所有东西都算作闭包，包括函数。
+
+2. 闭包中，函数中定义的函数可以访问到非自身作用域内的变量需要注意的是，闭包和 return 没有关系，return 函数只是闭包的一种实现方式而已，比如这个 cancelToken 中以参数形式传递的函数同样达到了闭包的效果访问到了 resolvePromise 这个自由函数去执行。
+
+##### 关于函数的赋值，需要注意
+
+1. 之前一直理解函数的赋值是基本类型的赋值仅仅赋值的是函数体 string，这个理解是不正确的。
+
+函数的赋值是基于引用类型的赋值，就好比 cancelToken 类中的对于外部调用 cancel=c 这个赋值，其实就是基于引用类型的赋值才能实现的。
+
+###### 实现 axios 的取消功能有两点这里特别强调下
+
+1. 利用闭包特性，参数形式传递 function，外部调用该函数达到访问内部函数从而执行内部函数。
+
+2. 利用函数的赋值引用类型，c = cancel，从而调用 cancel 相当于调用同样地址的 c 进行打包闭包效果。
+
+3. 利用 Promise 特性，闭包调用到内部的 resolvePromise 函数从而改变 Promise 状态达到执行 xhr 中 then 的逻辑中断请求。
+
+#### 谨记如下 Demo
+
+```
+ function moduleA() {
+            const url = "hylink.com";
+            let fn;
+            moduleB(function(c) {
+                fn = c;
+            });
+            fn();
+        }
+
+        function moduleB(fnn) {
+            const url = "hycoding.com";
+
+            function fn() {
+                console.log(url);
+            }
+            const map = {
+                a: fn,
+            };
+            fnn(map["a"]);
+        }
+ 
+        moduleA(); // hycoding.com
+``` 
+
+##### axios 这种设计思想非常 Nice 啊，学到了。！！！
