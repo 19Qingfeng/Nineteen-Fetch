@@ -384,3 +384,71 @@ instance({
 > Axios 合并配置，扩展功能完毕。
 
 ---
+
+### 取消功能的设计和实现
+
+#### 需求分析
+
+> 需求：参照 Axios 官网的配置，从 axios 的取消接口设计层面，我们希望做如下的设计：
+
+##### 第一种取消方式
+
+```
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios.get('/user/12345', {
+  cancelToken: source.token
+}).catch(function (e) {
+  if (axios.isCancel(e)) {
+    console.log('Request canceled', e.message);
+  } else {
+    // 处理错误
+  }
+});
+
+// 取消请求 (请求原因是可选的)
+source.cancel('Operation canceled by the user.');
+```
+
+给 axios 上添加一个 CancelToken 的对象，它拥有一个 source 方法返回一个 source 对象。source.token 是每次请求时传递给配置对象的 cancelToken 属性，然后在请求发出去之后可以通过 source.cancel 方法取消请求。
+
+##### 第二种取消方式
+
+```
+const CancelToken = axios.CancelToken;
+let cancel;
+
+axios.get('/user/12345', {
+  cancelToken: new CancelToken(function executor(c) {
+    cancel = c;
+  })
+});
+
+// 取消请求
+cancel();
+```
+
+axios.CancelToken 是一个类，这里直接将实例化的类对象赋值给请求配置对象中的 cancelToken 属性，CancelToken 构造函数接受一个 excutor 方法，这个方法接受一个参数是取消函数 c。然后在 executor 内部拿到 c 并且将 c 赋值给 cancel，之后通过调用 cancel 进行取消。
+
+#### 异步分离原则分析
+
+经过需求分析，简单推断出:
+
+axios 请求配置上需要额外添加一个 CancelToken 类，然后在外部调用 cancel 方法进行取消。
+
+请求的发送是一个异步过程，最终执行的是 xhr.send 方法，MDN 上 xhr 对象提供了一个 abort 方法阻止请求的发送。因为 xhr 已经被封装在 axios 内部外部目前是无法直接触碰到 xhr 对象的。所以最终当外部执行 cancel 方法的时候实质上要在内部调用 xhr.abort 方法。
+
+其实思路比较简单：在 xhr 异步发送请求中，插入一段代码。当外部执行 cancel 方法的时候内部插入这段代码进行执行从而调用 axios.abort 阻止请求。
+
+所以决定用 Promise 进行异步分离，也就是在 CancelToken 对象中保存一个 pedding 状态 Promise 对象。然后当我们执行 cancel 方法的时候，能够访问到这个 Promise 对象，把它从 pending 状态变成 resolved 状态，这样我们就可以在 then 函数中去实现取消请求的逻辑，类似如下的代码：
+
+```
+if (cancelToken) {
+  cancelToken.promise
+    .then(reason => {
+      request.abort()
+      reject(reason)
+    })
+}
+```
