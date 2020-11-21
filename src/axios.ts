@@ -3,6 +3,8 @@ import { AxiosRequestConfig, AxiosStatic } from './types'
 import { extend } from './helpers/utlis'
 import defaultsConifg from './default'
 import mergeConfig from './core/mergeConfig'
+import CancelToken from './cancel/CancelToken'
+import Cancel, { isCancel } from './cancel/Cancel'
 // 扩展接口本质其实就是将原本的aixos方法 拷贝Axios类的实例方法 最终调用的还是axios
 function createInstance(defaultsConifg: AxiosRequestConfig): AxiosStatic {
   const context = new Axios(defaultsConifg)
@@ -52,5 +54,9 @@ const axios = createInstance(defaultsConifg)
 axios.create = function(config) {
   return createInstance(mergeConfig(defaultsConifg, config))
 }
+
+axios.CancelToken = CancelToken
+axios.Cancel = Cancel
+axios.isCancel = isCancel
 
 export default axios

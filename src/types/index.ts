@@ -79,6 +79,11 @@ export interface AxiosInstance extends Axios {
 
 export interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosRequestConfig): AxiosInstance
+
+  CancelToken: CancelTokenStatic
+  Cancel: CancelStatic // axios官网兼容 好像并无作用
+  isCancel: (val: any) => boolean
+  // isCancel(val: any): boolean
 }
 
 export interface AxiosInterceptorManager<T> {
@@ -101,8 +106,8 @@ export interface AxiosTranformer {
 
 // CancelToken实例类型
 export interface CancelToken {
-  promise: Promise<string>
-  reason?: string
+  promise: Promise<Cancel>
+  reason?: Cancel
 }
 
 // 取消方法类型
@@ -126,4 +131,13 @@ export interface CancelTokenStatic {
   new (fn: CancelExecutor): CancelToken
 
   source(): CancelTokenSource
+}
+
+// 取消类实例类型 - 适用于代替reason 判断axios.isCancel
+export interface Cancel {
+  message?: string
+}
+
+export interface CancelStatic {
+  new (message?: string): Cancel
 }
