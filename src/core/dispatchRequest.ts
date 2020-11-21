@@ -5,6 +5,7 @@ import { flattenHeaders } from '../helpers/headers'
 import transform from './transform'
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
+  throwIfCancellationRequested(config)
   processCofing(config)
   return xhr(config).then((response: AxiosResponse) => {
     return transformResponseData(response)
@@ -27,6 +28,13 @@ function transformResponseData(response: AxiosResponse): AxiosResponse {
   // 抽离公共transform函数处理 request和response都会用到 避免dispatchrequest冗余
   response.data = transform(response.data, response.headers, response.config.transformResponse)
   return response
+}
+
+function throwIfCancellationRequested(config: AxiosRequestConfig): void | never {
+  if (config.cancelToken) {
+    // 不使用config.cancelToken.reason是否存在的判断 模块化编程 将检测放在类中的实例方法是最好的处理方式
+    config.cancelToken.throwIfRequested()
+  }
 }
 
 export default dispatchRequest

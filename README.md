@@ -517,3 +517,7 @@ if (cancelToken) {
 #### 额外逻辑处理
 
 需求：对于一些请求携带的cancelToken已经被取消的情况下直接不发送请求(无意义)，处理成为抛出异常既可，异常的信息就是取消的原因。
+
+> 解决方式：通过request请求配置中cancelToken的reason既可以进行判断。
+
+> 需要注意的是不要直接在core中进行if if的判断了，模块化思维将是否发送抽象到cancelToken类方法中。

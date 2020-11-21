@@ -23,6 +23,12 @@ export default class CancelToken {
     })
   }
 
+  throwIfRequested() {
+    if (this.reason) {
+      throw this.reason
+    }
+  }
+
   static source(): CancelTokenSource {
     let cancelFn!: Canceler // 取消函数
     const token = new CancelToken(function(c) {
