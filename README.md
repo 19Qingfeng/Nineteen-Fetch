@@ -504,20 +504,22 @@ if (cancelToken) {
             };
             fnn(map["a"]);
         }
- 
+
         moduleA(); // hycoding.com
-``` 
+```
 
 ##### axios 这种设计思想非常 Nice 啊，学到了。！！！
 
-#### axios静态方法
+#### axios 静态方法
 
-> axios.isCancel以及axios.cancelToken实现。
+> axios.isCancel 以及 axios.cancelToken 实现。
 
 #### 额外逻辑处理
 
-需求：对于一些请求携带的cancelToken已经被取消的情况下直接不发送请求(无意义)，处理成为抛出异常既可，异常的信息就是取消的原因。
+需求：对于一些请求携带的 cancelToken 已经被取消的情况下直接不发送请求(无意义)，处理成为抛出异常既可，异常的信息就是取消的原因。
 
-> 解决方式：通过request请求配置中cancelToken的reason既可以进行判断。
+> 解决方式：通过 request 请求配置中 cancelToken 的 reason 既可以进行判断。
 
-> 需要注意的是不要直接在core中进行if if的判断了，模块化思维将是否发送抽象到cancelToken类方法中。
+> 需要注意的是不要直接在 core 中进行 if if 的判断了，模块化思维将是否发送抽象到 cancelToken 类方法中。
+
+---
