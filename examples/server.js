@@ -4,6 +4,9 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+const cookieParser = require('cookie-parser')
+
+require('./server2')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -15,6 +18,8 @@ app.use(webpackDevMiddleware(compiler, {
         chunks: false
     }
 }))
+
+app.use(cookieParser())
 
 app.use(webpackHotMiddleware(compiler))
 
@@ -41,6 +46,8 @@ registerInterceptorRouter()
 registerConfigRouter()
 
 registerCancelRouter()
+
+registerMoreRouter()
 
 function registerSimpleRouter() {
     router.get('/simple/get', function(req, res) {
@@ -161,6 +168,12 @@ function registerCancelRouter() {
         setTimeout(() => {
             res.json(req.body)
         }, 1000)
+    })
+}
+
+function registerMoreRouter() {
+    router.get('/more/get', function(req, res) {
+        res.json(req.cookies)
     })
 }
 

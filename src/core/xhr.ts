@@ -11,7 +11,8 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       headers,
       responseType,
       timeout,
-      cancelToken
+      cancelToken,
+      withCredentials
     } = requestConfig
 
     const request = new XMLHttpRequest()
@@ -24,8 +25,12 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       request.timeout = timeout
     }
 
+    if (withCredentials) {
+      request.withCredentials = withCredentials
+    }
+
     request.open(method.toUpperCase(), url!, true)
-    // open之后设置headers
+    // open之后设置headerswithCredentials
     Object.keys(headers).forEach(header => {
       if (data === null && header.toLocaleLowerCase() === 'content-type') {
         delete headers[header]

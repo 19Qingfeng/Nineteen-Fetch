@@ -524,15 +524,26 @@ if (cancelToken) {
 
 ---
 
+### withCredentials
 
-###
+需求:关于 withCredentials 可以参照下方我的文章解释。
 
-需求:关于withCredentials可以参照下方我的文章解释。
-
-[XHR中的withCredentials](https://juejin.cn/post/6897481750390587399/)
+[XHR 中的 withCredentials](https://juejin.cn/post/6897481750390587399/)
 
 有些时候我们会发一些跨域请求，比如 http://domain-a.com 站点发送一个 http://api.domain-b.com/get 的请求，默认情况下，浏览器会根据同源策略限制这种跨域请求，但是可以通过 CORS (opens new window)技术解决跨域问题。
 
-> widthCredentials在同源下(相同域下是无效的)，也就是相同域下都会请求写在cookie。
+> widthCredentials 在同源下(相同域下是无效的)，也就是相同域下都会请求写在 cookie。
 
 在同域的情况下，我们发送请求会默认携带当前域下的 cookie，但是在跨域的情况下，默认是不会携带请求域下的 cookie 的，比如 http://domain-a.com 站点发送一个 http://api.domain-b.com/get 的请求，默认是不会携带 api.domain-b.com 域下的 cookie，如果我们想携带（很多情况下是需要的），只需要设置请求的 xhr 对象的 withCredentials 为 true 即可。
+
+#### 需要注意的是设置了 xhr.withCredentials=true 后还需要额外注意 cookie 的 SameSite 属性。
+
+##### Chrome80 后 SameSite 属性默认为 Lax，也就是不支持 demo 中的 post 请求携带跨域 cookie。
+
+解决方式可以参照这篇文章[Chrome80 后关于 cookie 以及跨域携带 cookie](https://juejin.cn/post/6844904088165941262)。
+
+> 其实可以这样理解：
+
+xhr.withCredentials 表示跨域请求是否支持携带请求域 cookie(基础:开启支持跨域请求支持携带请求域 cookie)，
+
+SameSite 可以看成再此基础上哪些方式被支持可以携带跨域 cookie(二级限制:开启后额外限制特定的请求方式可以携带跨域 cookie)。
