@@ -60,31 +60,31 @@ import qs from 'qs'
 //   console.log(e)
 // })
 
-const instance = axios.create({
-  transformRequest: [
-    function(data) {
-      return qs.stringify(data)
-    },
-    ...(axios.defaults.transformRequest as AxiosTransformer[])
-  ],
-  transformResponse: [
-    ...(axios.defaults.transformResponse as AxiosTransformer[]),
-    function(data) {
-      if (typeof data === 'object') {
-        data.b = 2
-        data.name = 'wang.haoyu'
-      }
-      return data
-    }
-  ]
-})
+// const instance = axios.create({
+//   transformRequest: [
+//     function(data) {
+//       return qs.stringify(data)
+//     },
+//     ...(axios.defaults.transformRequest as AxiosTransformer[])
+//   ],
+//   transformResponse: [
+//     ...(axios.defaults.transformResponse as AxiosTransformer[]),
+//     function(data) {
+//       if (typeof data === 'object') {
+//         data.b = 2
+//         data.name = 'wang.haoyu'
+//       }
+//       return data
+//     }
+//   ]
+// })
 
-instance({
-  url: '/config/post',
-  method: 'post',
-  data: {
-    a: 1
-  }
-}).then(res => {
-  console.log(res.data)
-})
+// instance({
+//   url: '/config/post',
+//   method: 'post',
+//   data: {
+//     a: 1
+//   }
+// }).then(res => {
+//   console.log(res.data)
+// })

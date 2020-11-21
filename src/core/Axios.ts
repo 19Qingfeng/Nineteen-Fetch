@@ -120,7 +120,7 @@ class Axios {
     config?: AxiosRequestConfig
   ): AxiosPromise {
     const requestConfig = Object.assign(config || {}, { url, method })
-    return dispatchRequest(requestConfig)
+    return this.request(requestConfig)
   }
 
   _requestMethodWithData(
@@ -130,7 +130,7 @@ class Axios {
     config?: AxiosRequestConfig
   ): AxiosPromise {
     const requestConfig = Object.assign(config || {}, { url, method, data })
-    return dispatchRequest(requestConfig)
+    return this.request(requestConfig)
   }
 }
 

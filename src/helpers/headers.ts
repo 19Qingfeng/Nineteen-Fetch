@@ -22,9 +22,9 @@ function normazilerHeader(headers: any, normazilerName: string): any {
 }
 
 export function processHeaders(headers: any, data: any): any {
+
   // 格式化防止大小写
   normazilerHeader(headers, 'Content-Type')
-
   if (isPlaneObject(data)) {
     if (headers && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json;charset=utf-8'
