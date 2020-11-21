@@ -509,3 +509,7 @@ if (cancelToken) {
 ``` 
 
 ##### axios 这种设计思想非常 Nice 啊，学到了。！！！
+
+#### axios静态方法
+
+> axios.isCancel以及axios.cancelToken实现。
