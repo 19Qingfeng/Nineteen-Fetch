@@ -530,6 +530,8 @@ if (cancelToken) {
 
 [XHR 中的 withCredentials](https://juejin.cn/post/6897481750390587399/)
 
+> 其实也就是当请求配置 xhr.withCredentials = true 那么该请求就可以支持发送跨域请求并且携带请求域的 cookie。只不过当携带 cookie 还会存在一些其他限制，比如 cookie 的 SameSite 属性。
+
 有些时候我们会发一些跨域请求，比如 http://domain-a.com 站点发送一个 http://api.domain-b.com/get 的请求，默认情况下，浏览器会根据同源策略限制这种跨域请求，但是可以通过 CORS (opens new window)技术解决跨域问题。
 
 > widthCredentials 在同源下(相同域下是无效的)，也就是相同域下都会请求写在 cookie。
@@ -547,3 +549,22 @@ if (cancelToken) {
 xhr.withCredentials 表示跨域请求是否支持携带请求域 cookie(基础:开启支持跨域请求支持携带请求域 cookie)，
 
 SameSite 可以看成再此基础上哪些方式被支持可以携带跨域 cookie(二级限制:开启后额外限制特定的请求方式可以携带跨域 cookie)。
+
+### CSRF/XSRF
+
+关于 CSRF 攻击方式和攻击远离以及防御策略可以参照我的这篇文章[大白话讲讲 CSRF 究竟是什么](https://juejin.cn/post/6897591924946993159/)。
+
+> CSRF 的防御手段有很多，比如验证请求的 referer，但是 referer 也是可以伪造的，所以杜绝此类攻击的一种方式是服务器端要求每次请求都包含一个 token，这个 token 不在前端生成，而是在我们每次访问站点的时候生成，并通过 set-cookie 的方式种到客户端，然后客户端发送请求的时候，从 cookie 中对应的字段读取出 token，然后添加到请求 headers 中。这样服务端就可以从请求 headers 中读取这个 token 并验证，由于这个 token 是很难伪造的，所以就能区分这个请求是否是用户正常发起的。详细参见文章内容。
+
+对于 ts-axios 库，我们要自动把这几件事做了，每次发送请求的时候，从 cookie 中读取对应的 token 值，然后添加到请求 headers 中。我们允许用户配置 xsrfCookieName 和 xsrfHeaderName，其中 xsrfCookieName 表示存储 token 的 cookie 名称，xsrfHeaderName 表示请求 headers 中 token 对应的 header 名称。
+
+```
+axios.get('/more/get',{
+  xsrfCookieName: 'XSRF-TOKEN', // default
+  xsrfHeaderName: 'X-XSRF-TOKEN' // default
+}).then(res => {
+  console.log(res)
+})
+```
+
+我们提供 xsrfCookieName 和 xsrfHeaderName 的默认值，当然用户也可以根据自己的需求在请求中去配置 xsrfCookieName 和 xsrfHeaderName。
