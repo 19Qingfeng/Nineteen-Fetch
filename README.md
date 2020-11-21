@@ -513,3 +513,7 @@ if (cancelToken) {
 #### axios静态方法
 
 > axios.isCancel以及axios.cancelToken实现。
+
+#### 额外逻辑处理
+
+需求：对于一些请求携带的cancelToken已经被取消的情况下直接不发送请求(无意义)，处理成为抛出异常既可，异常的信息就是取消的原因。
