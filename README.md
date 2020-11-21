@@ -523,3 +523,16 @@ if (cancelToken) {
 > 需要注意的是不要直接在 core 中进行 if if 的判断了，模块化思维将是否发送抽象到 cancelToken 类方法中。
 
 ---
+
+
+###
+
+需求:关于withCredentials可以参照下方我的文章解释。
+
+[XHR中的withCredentials](https://juejin.cn/post/6897481750390587399/)
+
+有些时候我们会发一些跨域请求，比如 http://domain-a.com 站点发送一个 http://api.domain-b.com/get 的请求，默认情况下，浏览器会根据同源策略限制这种跨域请求，但是可以通过 CORS (opens new window)技术解决跨域问题。
+
+> widthCredentials在同源下(相同域下是无效的)，也就是相同域下都会请求写在cookie。
+
+在同域的情况下，我们发送请求会默认携带当前域下的 cookie，但是在跨域的情况下，默认是不会携带请求域下的 cookie 的，比如 http://domain-a.com 站点发送一个 http://api.domain-b.com/get 的请求，默认是不会携带 api.domain-b.com 域下的 cookie，如果我们想携带（很多情况下是需要的），只需要设置请求的 xhr 对象的 withCredentials 为 true 即可。
