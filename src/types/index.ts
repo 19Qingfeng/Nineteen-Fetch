@@ -26,6 +26,8 @@ export interface AxiosRequestConfig {
   transformResponse?: AxiosTranformer | AxiosTranformer[]
   cancelToken?: CancelToken
   withCredentials?: boolean
+  xsrfCookieName?: 'XSRF-TOKEN'
+  xsrfHeaderName?: 'X-XSRF-TOKEN'
   [propName: string]: any
 }
 

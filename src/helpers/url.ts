@@ -21,6 +21,11 @@
 */
 import { isPlaneObject, isDate } from './utlis'
 
+interface URLOrigin {
+  host: string
+  protocol: string
+}
+
 function encode(val: string): string {
   return encodeURIComponent(val)
     .replace(/%40/g, '@')
@@ -73,4 +78,20 @@ export function buildUrl(url: string, params?: any): string {
   }
 
   return url
+}
+// 是否同源
+export function isURLSameOrigin(url: string): boolean {
+  const { host, protocol } = resolveURL(url)
+  return host === currentOrigin.host && protocol === currentOrigin.protocol
+}
+
+const urlParsingNode = document.createElement('a')
+const currentOrigin = resolveURL(window.location.href)
+
+function resolveURL(url: string): URLOrigin {
+  urlParsingNode.setAttribute('href', url)
+  return {
+    host: urlParsingNode.host,
+    protocol: urlParsingNode.protocol
+  }
 }

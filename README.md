@@ -568,3 +568,14 @@ axios.get('/more/get',{
 ```
 
 我们提供 xsrfCookieName 和 xsrfHeaderName 的默认值，当然用户也可以根据自己的需求在请求中去配置 xsrfCookieName 和 xsrfHeaderName。
+
+接下来我们要做三件事：
+
++ 首先判断如果是配置 withCredentials 为 true 或者是同域请求，我们才会请求 headers 添加 xsrf 相关的字段。
+
+> 判断是否是同域请求可以通过一个工具函数，传入URL之后函数内部创建一个a标签URL赋值给href。之后通过a.host/a.protocol解析传入的URL的域名和协议。
+> 通过传入的URL和window.location.href当前域名进行判断是否是同源。
+
++ 如果判断成功，尝试从 cookie 中读取 xsrf 的 token 值。
+
++ 如果能读到，则把它添加到请求 headers 的 xsrf 相关字段中。
