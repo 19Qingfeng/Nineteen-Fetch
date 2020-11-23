@@ -21,6 +21,8 @@ const defaults: AxiosRequestConfig = {
       Accept: 'application/json,text/plain,*/*'
     }
   },
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
   transformRequest: [
     // 抽离dispatchRequest中的header和data处理
     function(data: any, headers: any): any {

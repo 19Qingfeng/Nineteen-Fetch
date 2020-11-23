@@ -1,6 +1,8 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { createdError } from '../helpers/class/error'
 import { parseHeaders } from '../helpers/headers'
+import { isURLSameOrigin } from '../helpers/url'
+import cookie from '../helpers/cookie'
 
 export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -12,7 +14,9 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       responseType,
       timeout,
       cancelToken,
-      withCredentials
+      withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName
     } = requestConfig
 
     const request = new XMLHttpRequest()
@@ -30,7 +34,15 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
     }
 
     request.open(method.toUpperCase(), url!, true)
-    // open之后设置headerswithCredentials
+    // IE10中open之后设置headerswithCredentials
+
+    if ((withCredentials || (isURLSameOrigin(url!))) && xsrfCookieName) {
+      const xsrfValue = cookie.read(xsrfCookieName)
+      if(xsrfValue && xsrfHeaderName) {
+        headers[xsrfHeaderName] = xsrfValue
+      }
+    }
+
     Object.keys(headers).forEach(header => {
       if (data === null && header.toLocaleLowerCase() === 'content-type') {
         delete headers[header]

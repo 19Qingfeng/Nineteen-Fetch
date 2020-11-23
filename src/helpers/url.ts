@@ -88,6 +88,8 @@ export function isURLSameOrigin(url: string): boolean {
 const urlParsingNode = document.createElement('a')
 const currentOrigin = resolveURL(window.location.href)
 
+// 解析URL域名和协议
+// 这里使用了a标签 同样可以使用new URL(url).host/protocol
 function resolveURL(url: string): URLOrigin {
   urlParsingNode.setAttribute('href', url)
   return {
