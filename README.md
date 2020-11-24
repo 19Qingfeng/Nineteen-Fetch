@@ -571,11 +571,43 @@ axios.get('/more/get',{
 
 接下来我们要做三件事：
 
-+ 首先判断如果是配置 withCredentials 为 true 或者是同域请求，我们才会请求 headers 添加 xsrf 相关的字段。
+- 首先判断如果是配置 withCredentials 为 true 或者是同域请求，我们才会请求 headers 添加 xsrf 相关的字段。
 
-> 判断是否是同域请求可以通过一个工具函数，传入URL之后函数内部创建一个a标签URL赋值给href。之后通过a.host/a.protocol解析传入的URL的域名和协议。
-> 通过传入的URL和window.location.href当前域名进行判断是否是同源。
+> 判断是否是同域请求可以通过一个工具函数，传入 URL 之后函数内部创建一个 a 标签 URL 赋值给 href。之后通过 a.host/a.protocol 解析传入的 URL 的域名和协议。
+> 通过传入的 URL 和 window.location.href 当前域名进行判断是否是同源。
 
-+ 如果判断成功，尝试从 cookie 中读取 xsrf 的 token 值。
+- 如果判断成功，尝试从 cookie 中读取 xsrf 的 token 值。
 
-+ 如果能读到，则把它添加到请求 headers 的 xsrf 相关字段中。
+- 如果能读到，则把它添加到请求 headers 的 xsrf 相关字段中。
+
+---
+
+### 上传下载进度实现
+
+有些时候，当我们上传文件或者是请求一个大体积数据的时候，希望知道实时的进度，甚至可以基于此做一个进度条的展示。
+
+我们希望给 axios 的请求配置提供 onDownloadProgress 和 onUploadProgress 2 个函数属性，用户可以通过这俩函数实现对下载进度和上传进度的监控。
+
+```
+axios.get('/more/get',{
+  onDownloadProgress(progressEvent) {
+    // 监听下载进度
+  }
+})
+
+axios.post('/more/post',{
+  onUploadProgress(progressEvent) {
+    // 监听上传进度
+  }
+})
+```
+
+xhr 对象提供了一个 progress (opens new window)事件，我们可以监听此事件对数据的下载进度做监控；另外，xhr.uplaod (opens new window)对象也提供了 progress (opens new window)事件，我们可以基于此对上传进度做监控
+
+[XMLHttpRequest.upload](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/upload)
+
+> MDN upload 上传对象-对应事件。
+
+[progress](https://developer.mozilla.org/zh-CN/docs/Web/Events/%E8%BF%9B%E5%BA%A6%E6%9D%A1)
+
+> MDN downLoad 下载事件。

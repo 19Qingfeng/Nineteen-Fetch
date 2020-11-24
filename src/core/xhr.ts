@@ -18,7 +18,7 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       xsrfCookieName,
       xsrfHeaderName
     } = requestConfig
-
+    
     const request = new XMLHttpRequest()
 
     if (responseType) {
