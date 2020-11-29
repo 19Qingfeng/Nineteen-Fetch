@@ -34,11 +34,9 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
     }
 
     request.open(method.toUpperCase(), url!, true)
-    // IE10中open之后设置headerswithCredentials
-
     if ((withCredentials || (isURLSameOrigin(url!))) && xsrfCookieName) {
       const xsrfValue = cookie.read(xsrfCookieName)
-      if(xsrfValue && xsrfHeaderName) {
+      if (xsrfValue && xsrfHeaderName) {
         headers[xsrfHeaderName] = xsrfValue
       }
     }

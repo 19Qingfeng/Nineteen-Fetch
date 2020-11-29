@@ -611,3 +611,6 @@ xhr 对象提供了一个 progress (opens new window)事件，我们可以监听
 [progress](https://developer.mozilla.org/zh-CN/docs/Web/Events/%E8%BF%9B%E5%BA%A6%E6%9D%A1)
 
 > MDN downLoad 下载事件。
+
+
+日！！！xsrfDEMO还没写呢！记得补上
