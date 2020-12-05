@@ -20,6 +20,19 @@
 
 - 格式化 headers，对于 data 存在 JSON 对象，默认添加 content-type。
 
+* 补充下
+* application/json 和 application/x-www-form-urlencode 之间的区别
+  两种请求方式对服务器端都没什么影响
+  application/x-www-form-urlencoded 方式是比较老的一种方式，这种方式的好处就是浏览器都支持，
+  在请求发送过程中会对数据进行序列化处理，以键值对形式？key1=value1&key2=value2 的方式发送到服务器，
+  application/json，随着 json 规范的越来越流行，并且浏览器支持程度原来越好，许多开发人员易 application/json 作为请求 content-type，
+  告诉服务器请求的主题内容是 json 格式的字符串，服务器端会对 json 字符串进行解析，
+  这种方式的好处就是前端人员不需要关心数据结构的复杂度，
+  只要是标准的 json 格式就能提交成功，application/json 数据格式越来越得到开发人员的青睐
+  举例. 向服务器发送数据 {a:“a”, b:“b”}
+  如果头的格式是 application/x-www-form-urlencoded, 则 ajax.send(“a=‘a’&b=‘b’”);
+  如果头的格式是 application/json, 则 ajax.send(JSON.stringify(data));
+
 ---
 
 ### 处理响应数据
@@ -611,6 +624,3 @@ xhr 对象提供了一个 progress (opens new window)事件，我们可以监听
 [progress](https://developer.mozilla.org/zh-CN/docs/Web/Events/%E8%BF%9B%E5%BA%A6%E6%9D%A1)
 
 > MDN downLoad 下载事件。
-
-
-日！！！xsrfDEMO还没写呢！记得补上
