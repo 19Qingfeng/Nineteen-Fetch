@@ -624,3 +624,13 @@ xhr 对象提供了一个 progress (opens new window)事件，我们可以监听
 [progress](https://developer.mozilla.org/zh-CN/docs/Web/Events/%E8%BF%9B%E5%BA%A6%E6%9D%A1)
 
 > MDN downLoad 下载事件。
+
+#### Demo
+
+Demo中有几个要点 同时也fixed了一些bug
+
++ 上传文件的formData形式注意requestHeader的类型，一定要是multipart/form-data服务端才可以从req.files中拿到。
+
++ 借助express中间件connect-multiparty实现上传文件的存储位置。
+
++ NProgress注意同时引入样式文件，同时本次commit也增加了style-loader和css-loader。
