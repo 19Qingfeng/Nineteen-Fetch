@@ -5,6 +5,9 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
 const cookieParser = require('cookie-parser')
+// 上传文件使用了express的中间件处理
+const multipart = require('connect-multiparty')
+const path = require('path')
 
 require('./server2')
 
@@ -24,6 +27,16 @@ app.use(express.static(__dirname, {
     res.cookie('XSRF-TOKEN-D', '1234abc')
   }
 }))
+
+// 使用上传中间件
+app.use(multipart({
+    // uploadDir 上传文件存放目录
+    uploadDir:path.resolve(__dirname,'upload-file')
+}))
+
+// app.use(multipart({
+//     uploadDir: path.resolve(__dirname, 'upload-file')
+// }))
 
 app.use(cookieParser())
 
@@ -181,8 +194,13 @@ function registerMoreRouter() {
     router.get('/more/get', function(req, res) {
         res.json(req.cookies)
     })
-}
 
+    router.post('/more/upload', function(req, res) {
+        console.log(req.body)
+        console.log( req.files,'files')
+        res.end('upload success!')
+    })
+}
 
 app.use(router)
 

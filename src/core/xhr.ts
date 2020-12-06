@@ -2,7 +2,7 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { createdError } from '../helpers/class/error'
 import { parseHeaders } from '../helpers/headers'
 import { isURLSameOrigin } from '../helpers/url'
-import { isFormData } from "../helpers/utlis"
+import { isFormData } from '../helpers/utlis'
 import cookie from '../helpers/cookie'
 
 export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
@@ -21,11 +21,11 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       onDownloadProgress,
       onUploadProgress
     } = requestConfig
-    
+
     const request = new XMLHttpRequest()
 
     request.open(method.toUpperCase(), url!, true)
-    
+
     // 配置config
     configureRequest()
     // 添加请求事件处理
@@ -37,34 +37,34 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
 
     request.send(data)
 
-    function configureRequest():void {
+    function configureRequest(): void {
       if (responseType) {
         request.responseType = responseType
       }
-  
+
       if (timeout) {
         request.timeout = timeout
       }
-  
+
       if (withCredentials) {
         request.withCredentials = withCredentials
       }
     }
 
-    function addEvents():void {
+    function addEvents(): void {
       request.onerror = function() {
         reject(createdError('network Error', requestConfig, null, request))
       }
-  
+
       request.ontimeout = function() {
         reject(createdError(`timeout of ${timeout} ms`, requestConfig, 'ECONNABORTED', request))
       }
-  
-      if(onDownloadProgress) {
+
+      if (onDownloadProgress) {
         request.onprogress = onDownloadProgress
       }
-  
-      if(onUploadProgress) {
+
+      if (onUploadProgress) {
         request.upload.onprogress = onUploadProgress
       }
 
@@ -74,7 +74,7 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
         if (request.status === 0) return
         const responseHeaders = parseHeaders(request.getAllResponseHeaders())
         const responseData = responseType === 'text' ? request.responseText : request.response
-  
+
         const response: AxiosResponse = {
           data: responseData,
           status: request.status,
@@ -87,13 +87,13 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       }
     }
 
-    function processHeaders():void {
+    function processHeaders(): void {
       // 上传发送请求格式为FormData类型(上传文件) 浏览器会自动添加content-type:multipart/form-data
-      if(isFormData(data)) {
-        delete headers['content-type']
+      if (isFormData(data)) {
+        delete headers['Content-Type']
       }
 
-      if ((withCredentials || (isURLSameOrigin(url!))) && xsrfCookieName) {
+      if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
         const xsrfValue = cookie.read(xsrfCookieName)
         if (xsrfValue && xsrfHeaderName) {
           headers[xsrfHeaderName] = xsrfValue
@@ -109,7 +109,7 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       })
     }
 
-    function processCancel():void {
+    function processCancel(): void {
       if (cancelToken) {
         cancelToken.promise
           .then(reason => {
