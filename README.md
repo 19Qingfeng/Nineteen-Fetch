@@ -627,10 +627,24 @@ xhr 对象提供了一个 progress (opens new window)事件，我们可以监听
 
 #### Demo
 
-Demo中有几个要点 同时也fixed了一些bug
+Demo 中有几个要点 同时也 fixed 了一些 bug
 
-+ 上传文件的formData形式注意requestHeader的类型，一定要是multipart/form-data服务端才可以从req.files中拿到。
+- 上传文件的 formData 形式注意 requestHeader 的类型，一定要是 multipart/form-data 服务端才可以从 req.files 中拿到。
 
-+ 借助express中间件connect-multiparty实现上传文件的存储位置。
+- 借助 express 中间件 connect-multiparty 实现上传文件的存储位置。
 
-+ NProgress注意同时引入样式文件，同时本次commit也增加了style-loader和css-loader。
+- NProgress 注意同时引入样式文件，同时本次 commit 也增加了 style-loader 和 css-loader。
+
+---
+
+### HTTP 授权
+
+HTTP 协议中的 Authorization (opens new window) 请求 header 会包含服务器用于验证用户代理身份的凭证，通常会在服务器返回 401 Unauthorized 状态码以及 WWW-Authenticate 消息头之后在后续请求中发送此消息头。
+
+axios 库也允许你在请求配置中配置 auth 属性，auth 是一个对象结构，包含 username 和 password 2 个属性。一旦用户在请求的时候配置这俩属性，我们就会自动往 HTTP 的 请求 header 中添加 Authorization 属性，它的值为 Basic 加密串。 这里的加密串是 username:password base64 加密后的结果。
+
+> 需求分析，config中增加了auth属性值为username和password属性。当发现config中带有这个属性的时候我们解析这两个属性的值通过base64(JS中btoa()方法)进行base64加密，之后在进行拼接字符串形式。添加到header名为Authorization头中就可以了。
+
+> 关于Authorization, Authorization 是 HTTP 原本协议支持的一种授权方式，但是现在大部分都不用这种方式了，因为当用户登录后，服务端会往客户端种一个 http only 的 cookie，作为登录凭证，是不会存储密码和用户名的。之后发送请求会自动携带这个 cookie，这是目前比较流行的一种方式。另外 xsrf 的 token，往往会另外生成，和用户登录还不一样，目的是为了即使用户没有登录，也要防止被 xsrf。
+
+#### 存疑，关于cookie和token。如果完全将token放在cookie中的话进行鉴权（而不放在token中）。那么和传统cookie鉴权方式又有区别呢？
