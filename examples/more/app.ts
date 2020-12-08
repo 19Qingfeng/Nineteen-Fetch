@@ -103,13 +103,24 @@ uploadEl!.addEventListener('click', e => {
   }
 })
 
-axios.post('/more/post', {
-  a: 1
-}, {
-  auth: {
-    username: 'Yee',
-    password: '123456'
+// axios.post('/more/post', {
+//   a: 1
+// }, {
+//   auth: {
+//     username: 'Yee',
+//     password: '123456'
+//   }
+// }).then(res => {
+//   console.log(res)
+// })
+
+
+axios.post('/more/post',{
+  a:'1'
+},{
+  auth:{
+    username:'wanghaoyu',
+    password:'wanghaoyu'
   }
-}).then(res => {
-  console.log(res)
-})
+}).then(res => console.log(res))
+.catch(e => console.error(e))

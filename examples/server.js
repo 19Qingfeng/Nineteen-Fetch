@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const webpack = require('webpack')
+const atob = require('atob')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
@@ -199,6 +200,19 @@ function registerMoreRouter() {
         console.log(req.body)
         console.log( req.files,'files')
         res.end('upload success!')
+    })
+
+    router.post('/more/post',function(req,res) {
+        const auth = req.headers.authorization
+        const [ type,credentials ] = auth.split(' ')
+        const [ username,password ] = atob(credentials).split(":")
+        if(type === 'Basic' && username === 'wanghaoyu' && password === 'wanghaoyu') {
+            res.json(req.body)
+        }else {
+            res.status(401)
+            res.end('UnAuthorization')
+        }
+
     })
 }
 
