@@ -648,3 +648,20 @@ axios 库也允许你在请求配置中配置 auth 属性，auth 是一个对象
 > 关于Authorization, Authorization 是 HTTP 原本协议支持的一种授权方式，但是现在大部分都不用这种方式了，因为当用户登录后，服务端会往客户端种一个 http only 的 cookie，作为登录凭证，是不会存储密码和用户名的。之后发送请求会自动携带这个 cookie，这是目前比较流行的一种方式。另外 xsrf 的 token，往往会另外生成，和用户登录还不一样，目的是为了即使用户没有登录，也要防止被 xsrf。
 
 #### 存疑，关于cookie和token。如果完全将token放在cookie中的话进行鉴权（而不放在token中）。那么和传统cookie鉴权方式又有区别呢？
+
+
+### 自定义合法状态码
+
+之前的逻辑中，我们库中写的代码默认status在200-300之间看作是合法状态。在这个区间之外的则抛出一个错误，有时候我们希望自己定义这些规则。比如304我们认为他也是一个合法状态（浏览器缓存），所以需求是希望做到axios支持一个配置，这个配置可以传入一个函数自定义合法的状态码。
+
+```
+axios.get('/more/304', {
+  validateStatus(status) {
+    return status >= 200 && status < 400
+  }
+}).then(res => {
+  console.log(res)
+}).catch((e: AxiosError) => {
+  console.log(e.message)
+})
+```
