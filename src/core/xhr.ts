@@ -20,7 +20,8 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
       xsrfHeaderName,
       onDownloadProgress,
       onUploadProgress,
-      auth
+      auth,
+      validateStatus
     } = requestConfig
 
     const request = new XMLHttpRequest()
@@ -130,7 +131,8 @@ export function xhr(requestConfig: AxiosRequestConfig): AxiosPromise {
 
     function handleResponse(response: AxiosResponse): void {
       const { status } = response
-      if (status <= 200 && status < 300) {
+      // 外界手动传递validateStatus为空的时候 那么就认为所有都是成功的
+      if (!validateStatus || validateStatus(status)) {
         resolve(response)
       } else {
         reject(

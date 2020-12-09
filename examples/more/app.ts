@@ -1,6 +1,7 @@
 import axios from '../../src/index'
 import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
+import { stat } from 'fs'
 
 // document.cookie = 'a=b'
 
@@ -115,12 +116,27 @@ uploadEl!.addEventListener('click', e => {
 // })
 
 
-axios.post('/more/post',{
-  a:'1'
-},{
-  auth:{
-    username:'wanghaoyu',
-    password:'wanghaoyu'
+// axios.post('/more/post',{
+//   a:'1'
+// },{
+//   auth:{
+//     username:'wanghaoyu',
+//     password:'wanghaoyu'
+//   }
+// }).then(res => console.log(res))
+// .catch(e => console.error(e))
+
+axios.get('/more/304').then(res => {
+  console.log(res,'res+304+noConfig')
+}).catch(e => {
+  console.log(e,'304 noconfig')
+})
+
+axios.get('/more/304',{
+  validateStatus:(status) => {
+    return status >= 200 && status < 400
   }
-}).then(res => console.log(res))
-.catch(e => console.error(e))
+})
+.then(res => {
+  console.log(res,'res+304+config')
+})
