@@ -10,8 +10,12 @@ export function isDate(data: any): data is Date {
   return toString.call(data) === '[object Date]'
 }
 
-export function isFormData(data:any): data is FormData {
+export function isFormData(data: any): data is FormData {
   return data instanceof FormData
+}
+
+export function isURLSearchParams(data: any): data is URLSearchParams {
+  return data instanceof URLSearchParams
 }
 
 export function extend<T, U>(to: U, from: T): T & U {

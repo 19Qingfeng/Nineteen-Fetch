@@ -19,7 +19,7 @@
     保留 url 中已存在的参数
 
 */
-import { isPlaneObject, isDate } from './utlis'
+import { isPlaneObject, isDate, isURLSearchParams } from './utlis'
 
 interface URLOrigin {
   host: string
@@ -37,38 +37,46 @@ function encode(val: string): string {
     .replace(/%5D/gi, ']')
 }
 
-export function buildUrl(url: string, params?: any): string {
+export function buildUrl(url: string, params?: any, paramsSerializer?: any): string {
   if (!params) {
     return url
   }
 
-  const keys = Object.keys(params)
+  let serializedParams
 
-  const part: string[] = []
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params)
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString()
+  } else {
+    const keys = Object.keys(params)
 
-  keys.forEach(key => {
-    let val = params[key]
-    if (val === undefined || val === null) return
-    let value: any[]
-    // 统一处理 全部转为array处理
-    if (Array.isArray(val)) {
-      value = val
-      key = `${key}[]`
-    } else {
-      value = [val]
-    }
-    value.forEach(val => {
-      if (isPlaneObject(val)) {
-        val = JSON.stringify(val)
+    const part: string[] = []
+
+    keys.forEach(key => {
+      let val = params[key]
+      if (val === undefined || val === null) return
+      let value: any[]
+      // 统一处理 全部转为array处理
+      if (Array.isArray(val)) {
+        value = val
+        key = `${key}[]`
+      } else {
+        value = [val]
       }
-      if (isDate(val)) {
-        val = val.toISOString()
-      }
-      part.push(`${encode(key)}=${encode(val)}`)
+      value.forEach(val => {
+        if (isPlaneObject(val)) {
+          val = JSON.stringify(val)
+        }
+        if (isDate(val)) {
+          val = val.toISOString()
+        }
+        part.push(`${encode(key)}=${encode(val)}`)
+      })
     })
-  })
 
-  let serializedParams = part.join('&')
+    serializedParams = part.join('&')
+  }
 
   if (serializedParams) {
     const markIndex = url.indexOf('#')
