@@ -669,3 +669,7 @@ axios.get('/more/304', {
 ## UrlSearchParams
 
 自定义URL参数转译。
+
+## BaseUrl
+
+BaseUrl配置。

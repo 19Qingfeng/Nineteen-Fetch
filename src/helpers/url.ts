@@ -105,3 +105,11 @@ function resolveURL(url: string): URLOrigin {
     protocol: urlParsingNode.protocol
   }
 }
+
+export function isAbsoluteURL(url: string): boolean {
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+}
+
+export function combineURL(baseUrl: string, relativeUrl?: string): string {
+  return relativeUrl ? baseUrl.replace(/\/+$/, '') + '/' + relativeUrl.replace(/^\/+/, '') : baseUrl
+}
